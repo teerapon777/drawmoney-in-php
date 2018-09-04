@@ -1,0 +1,85 @@
+<div class="container">
+  <br><br>
+  <h2>จัดการบัญชีผู้ใช้</h2>
+
+  <form id="form1" name="form1" method="post" action="">
+    <div class="card mb-4">
+            <h5 class="card-header">ค้นหา</h5>
+
+            <div class="card-body">
+              <div class="input-group">
+                <input type="text" class="form-control" value="<?PHP echo $_POST['txt'];?>" name="txt" placeholder="Search for...">
+                <span class="input-group-btn">
+                  <input class="btn btn-secondary" type="submit" name="button" id="button" value="ค้นหา" />
+                </span>
+              </div>
+            </div>
+          </div>
+
+  </form>
+  <FORM>
+<a href="index.php?content=Register"><INPUT TYPE="BUTTON" class="btn btn-primary" VALUE="ยื่นคำขอเบิก" ></a><br>
+</FORM>
+  
+ <br><table class="table">
+    <thead>
+      <tr>
+        <th>ชื่อผู้ใช้</th>
+        <th>รหัสผ่าน</th>
+        <th>ชื่อจริง</th>
+        <th>นามสกุล</th>
+        <th>เบอร์โทร</th>
+        <th>Email</th>
+        <th>รูปภาพ</th>
+        <th>ระดับผู้ใช้</th>
+      </tr>
+    </thead>
+    <?php
+    $txt=$_POST['txt'];
+	include 'connect.php';
+	if($txt==null)
+	{
+		$SQL="SELECT * FROM user";
+	}
+  else $SQL="select * from user where Username like '%$txt%' OR PreName like'%$txt%' OR FristName like'%$txt%' OR LastName like'%$txt%' OR Phone like'%$txt%'";
+	$QUERY=mysql_db_query($db,$SQL) or die ("error sql");
+	$row=mysql_num_rows($QUERY);
+	$i=1;
+	while($i<=$row)
+	{
+    $Rs = mysql_fetch_array($QUERY);
+    $Userid	= $Rs['Userid'];
+    $Username	= $Rs['Username'];
+    $Password	= $Rs['Password'];
+    $PreName	= $Rs['PreName'];
+    $FristName= $Rs['FristName'];
+    $LastName	= $Rs['LastName'];
+    $Phone	= $Rs['Phone'];
+    $Email	= $Rs['Email'];
+    $img	= $Rs['Image'];
+    $UserType = $Rs['UserType'];
+    ?>
+    <tbody>
+      <tr>
+        <td><?php echo $Username;?></td>
+        <td><?php echo $Password;?></td>
+        <td><?php echo $PreName.$FristName;?></td>
+        <td><?php echo $LastName;?></td>
+        <td><?php echo $Phone;?></td>
+        <td><?php echo $Email;?></td>
+        <td><img src="upload/<?php echo $img; ?>"width="50"height="35"></td>
+        <td><?php
+            if($UserType == 1) echo "ผู้ขอเปิก";
+            else if($UserType == 2) echo "ผู้อนุมัติ";
+            else if($UserType == 3) echo "ผู้ดูแลระบบ";
+            else echo "ผู้จ่ายเงิน";
+        ?></td>
+        <td><a href="index.php?content=EditAdd&&id=<?php echo $Userid; ?>"><img src="image/edit.png" width="40" height="30"></a></td>
+        <td><a href="index.php?content=Delete&&id=<?php echo $Userid; ?>"><img src="image/delete.png" width="40" height="30"></a></td>
+      </tr>
+    </tbody>
+    <?php
+			$i++;
+		}?>
+  </table>
+</div>
